@@ -19,6 +19,4 @@ def extract_video_id_from_url(url, headers={}, proxy=None):
 
 def random_choice(choices: list):
     """Return a random choice from a list, or None if the list is empty"""
-    if choices is None or len(choices) == 0:
-        return None
-    return random.choice(choices)
+    return None if choices is None or not choices else random.choice(choices)

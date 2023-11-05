@@ -13,11 +13,7 @@ async def test_hashtag_videos():
         count = 0
         async for video in api.hashtag(name=tag_name).videos(count=1):
             count += 1
-            tag_included = False
-            for tag in video.hashtags:
-                if tag.name == tag_name:
-                    tag_included = True
-
+            tag_included = any(tag.name == tag_name for tag in video.hashtags)
             assert tag_included
 
             # Test sound on video.

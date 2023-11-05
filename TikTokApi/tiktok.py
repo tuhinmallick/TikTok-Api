@@ -332,16 +332,14 @@ class TikTokApi:
         """
         js_script = self.generate_js_fetch("GET", url, headers)
         _, session = self._get_session(**kwargs)
-        result = await session.page.evaluate(js_script)
-        return result
+        return await session.page.evaluate(js_script)
 
     async def generate_x_bogus(self, url: str, **kwargs):
         """Generate the X-Bogus header for a url"""
         _, session = self._get_session(**kwargs)
-        result = await session.page.evaluate(
+        return await session.page.evaluate(
             f'() => {{ return window.byted_acrawler.frontierSign("{url}") }}'
         )
-        return result
 
     async def sign_url(self, url: str, **kwargs):
         """Sign a url"""
@@ -354,10 +352,7 @@ class TikTokApi:
         if x_bogus is None:
             raise Exception("Failed to generate X-Bogus")
 
-        if "?" in url:
-            url += "&"
-        else:
-            url += "?"
+        url += "&" if "?" in url else "?"
         url += f"X-Bogus={x_bogus}"
 
         return url

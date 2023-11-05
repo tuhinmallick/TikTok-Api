@@ -143,36 +143,6 @@ class Video:
         """
 
         raise NotImplementedError
-        i, session = self.parent._get_session(**kwargs)
-        downloadAddr = self.as_dict["video"]["downloadAddr"]
-
-        cookies = await self.parent.get_session_cookies(session)
-        cookie_str = "; ".join([f"{k}={v}" for k, v in cookies.items()])
-
-        h = session.headers
-        h["cookie"] = cookie_str
-
-        # Fetching the video bytes using a browser fetch within the page context
-        file_bytes = await session.page.evaluate(
-            """
-        async (url, headers) => {
-            const response = await fetch(url, { headers });
-            if (response.ok) {
-                const buffer = await response.arrayBuffer();
-                return new Uint8Array(buffer);
-            } else {
-                return `Error: ${response.statusText}`;  // Return an error message if the fetch fails
-            }
-        }
-        """,
-            (downloadAddr, h),
-        )
-
-        byte_values = [
-            value
-            for key, value in sorted(file_bytes.items(), key=lambda item: int(item[0]))
-        ]
-        return bytes(byte_values)
 
     def __extract_from_data(self) -> None:
         data = self.as_dict
